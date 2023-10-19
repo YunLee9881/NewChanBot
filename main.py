@@ -38,7 +38,7 @@ tree = app_commands.CommandTree(bot)
 
 @tree.command(
     name="챤하",
-    description="회의 등록하기",
+    description="회의 시작하기",
     guild=MyGuild,
 )
 async def meeting(interaction: discord.Interaction):
