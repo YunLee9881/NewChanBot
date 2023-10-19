@@ -3,22 +3,19 @@ import discord
 import random
 import os
 import json
-
+import meeting
 from discord.ext import commands
 from discord import app_commands
-
+import variable_manager
 
 intents = discord.Intents.all()
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-with open("Resource.Json") as config_file:
-    config = json.load(config_file)
+token = variable_manager.bot_token
+id = variable_manager.server_id
 
-bot_token = config["bot_token"]
-server_id = config["server_id"]
-
-MyGuild = discord.Object(id=server_id)
+MyGuild = discord.Object(id=id)
 
 
 class Chan(discord.Client):
@@ -46,4 +43,4 @@ async def meeting(interaction: discord.Interaction):
     await interaction.response.send_message(f"{user.mention} 챤하!")
 
 
-bot.run(bot_token)
+bot.run(token)
