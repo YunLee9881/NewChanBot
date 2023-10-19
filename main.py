@@ -2,7 +2,7 @@ import requests
 import discord
 import random
 import os
-
+import json
 
 from discord.ext import commands
 from discord import app_commands
@@ -10,9 +10,15 @@ from discord import app_commands
 
 intents = discord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-MyGuild = discord.Object(id=1148901619765874718)
+with open("Resource.Json") as config_file:
+    config = json.load(config_file)
+
+bot_token = config["bot_token"]
+server_id = config["server_id"]
+
+MyGuild = discord.Object(id=server_id)
 
 
 class Chan(discord.Client):
@@ -40,4 +46,4 @@ async def meeting(interaction: discord.Interaction):
     await interaction.response.send_message(f"{user.mention} 챤하!")
 
 
-bot.run("MTE2MzM5MDY5NTE1NTk3ODMyMA.G_Hfry.6zreIMvz2Oaism1K1d3sBYGWYm9AbzqgHaI4EI")
+bot.run(bot_token)
