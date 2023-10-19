@@ -43,4 +43,9 @@ async def meeting(interaction: discord.Interaction):
     await interaction.response.send_message(f"{user.mention} 챤하!")
 
 
+@tree.command(name="오회보", description="오늘 회의 보여줘의 준말", guild=MyGuild)
+async def meeting_log(interaction: discord.Interaction):
+    await interaction.response.send_message(f"오늘 회의는 없어요!")
+
+
 bot.run(token)
