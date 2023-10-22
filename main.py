@@ -37,6 +37,12 @@ bot = Chan()
 tree = app_commands.CommandTree(bot)
 
 
+class Meeting(discord.ui.View):
+    @discord.ui.button(label="눌러!", style=discord.ButtonStyle.primary)
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_message("눌렀네?")
+
+
 @tree.command(
     name="챤하",
     description="회의 시작하기",
@@ -60,6 +66,11 @@ async def meeting_log(interaction: discord.Interaction):
         await interaction.response.send_message(
             f"오늘은! {meetingCount.meeting_count}개에요 다들 힘내요!"
         )
+
+
+@tree.command(name="버튼", description="버튼버튼", guild=MyGuild)
+async def button(interaction: discord.Interaction):
+    await interaction.response.send_message(f"버튼!", view=Meeting)
 
 
 bot.run(token)
