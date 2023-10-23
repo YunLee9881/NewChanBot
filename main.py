@@ -8,6 +8,7 @@ from discord.ext import commands
 from discord import app_commands
 import variable_manager
 from variable_manager import variable
+from discord import app_commands, Interaction, ui, ButtonStyle, SelectOption
 
 intents = discord.Intents.all()
 intents.members = True
@@ -37,10 +38,21 @@ bot = Chan()
 tree = app_commands.CommandTree(bot)
 
 
-class Meeting(discord.ui.View):
-    @discord.ui.button(label="눌러!", style=discord.ButtonStyle.primary)
-    async def button_callback(self, button, interaction):
-        await interaction.response.send_message("눌렀네?")
+@tree.command(
+    guild=discord.Object(id=1148901619765874718),
+    name="button",
+    description="button 만들기",
+)
+async def mkbutton(interaction: Interaction):
+    button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False)
+    view = ui.View()
+    view.add_item(button)
+
+    async def button_callback(interaction: Interaction):
+        await interaction.response.send_message(content="버튼 눌러짐!")
+
+    button.callback = button_callback
+    await interaction.response.send_message(view=view)
 
 
 @tree.command(
@@ -66,11 +78,6 @@ async def meeting_log(interaction: discord.Interaction):
         await interaction.response.send_message(
             f"오늘은! {meetingCount.meeting_count}개에요 다들 힘내요!"
         )
-
-
-@tree.command(name="버튼", description="버튼버튼", guild=MyGuild)
-async def button(interaction: discord.Interaction):
-    await interaction.response.send_message(f"버튼!", view=Meeting)
 
 
 bot.run(token)
