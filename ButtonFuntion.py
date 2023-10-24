@@ -1,6 +1,7 @@
 import discord
 from variable_manager import variable
 
+
 meetingCount = variable()
 
 
@@ -15,7 +16,9 @@ class Meeting_Check(discord.ui.View):
 
     @discord.ui.button(label="회의", style=discord.ButtonStyle.success, row=1)
     async def button1(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         await interaction.response.send_message("회의를 누르셨습니다")
         meetingCount.increase_meeting()
