@@ -7,7 +7,7 @@ meetingCount = variable()
 
 class Meeting_Check(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=30)
+        super().__init__()
         self.add_item(
             discord.ui.Button(
                 label="Click Here", url="https://github.com/YunLee9881/NewChanBot"

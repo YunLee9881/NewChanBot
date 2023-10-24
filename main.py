@@ -11,7 +11,7 @@ import variable_manager
 from variable_manager import variable
 from discord import app_commands, Interaction, ui, ButtonStyle, SelectOption
 from ButtonFuntion import Meeting_Check
-import Select_place
+from Select_place import SelectPlace
 import ButtonFuntion
 
 
@@ -72,16 +72,16 @@ async def meeting_log(interaction: discord.Interaction):
         )
 
 
-# @tree.command(name="select", description="select", guild=MyGuild)
-# async def meeting_place(interaction: Interaction):
-#     select = ui.Select
-#     view = Select_place()
+@bot.tree.command(name="select", description="select", guild=MyGuild)
+async def meeting_place(interaction: Interaction):
+    select = ui.Select
+    view = SelectPlace()
 
-#     async def select_callback(interaction: Interaction):
-#         await interaction.response.send_message(select.values[0])
+    async def select_callback(self, interaction: Interaction):
+        await interaction.response.send_message(f"{interaction.data['values'][0]}")
 
-#     select.callback = select_callback
-#     await interaction.response.send_message(view=view)
+    select.callback = select_callback
+    await interaction.response.send_message(view=view)
 
 
 bot.run(token)
