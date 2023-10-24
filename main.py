@@ -6,13 +6,11 @@ import json
 import meeting
 from discord.ext import commands
 from discord import app_commands
+
 import variable_manager
 from variable_manager import variable
 from discord import app_commands, Interaction, ui, ButtonStyle, SelectOption
 
-intents = discord.Intents.all()
-intents.members = True
-bot = commands.Bot(command_prefix="!", intents=intents)
 
 token = variable_manager.bot_token
 id = variable_manager.server_id
@@ -21,6 +19,10 @@ meetingCount = variable()
 # variable_meeting = variable()
 
 MyGuild = discord.Object(id=id)
+
+intents = discord.Intents.all()
+intents.members = True
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 
 class Chan(discord.Client):
@@ -38,15 +40,46 @@ bot = Chan()
 tree = app_commands.CommandTree(bot)
 
 
+class ButtonFunction(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=30)
+        self.add_item(
+            discord.ui.Button(label="Click Here", url="http://aochfl.tistory.com")
+        )
+
+    @discord.ui.button(label="primary", style=discord.ButtonStyle.primary, row=1)
+    async def button1(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        await interaction.response.send_message("primary 누르셨습니다")
+
+    @discord.ui.button(label="secondary", style=discord.ButtonStyle.secondary, row=1)
+    async def button2(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        await interaction.response.send_message("secondary 누르셨습니다")
+
+    @discord.ui.button(label="success", style=discord.ButtonStyle.success, row=2)
+    async def button3(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        await interaction.response.send_message("success 누르셨습니다")
+
+    @discord.ui.button(label="danger", style=discord.ButtonStyle.danger, row=2)
+    async def button4(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        await interaction.response.send_message("danger 누르셨습니다")
+
+
 @tree.command(
-    guild=discord.Object(id=1148901619765874718),
+    guild=MyGuild,
     name="button",
     description="button 만들기",
 )
 async def mkbutton(interaction: Interaction):
-    button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False)
-    view = ui.View()
-    view.add_item(button)
+    button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False, row=2)
+    view = ButtonFunction()
 
     async def button_callback(interaction: Interaction):
         await interaction.response.send_message(content="버튼 눌러짐!")
