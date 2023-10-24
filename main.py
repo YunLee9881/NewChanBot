@@ -10,12 +10,14 @@ from discord import app_commands
 import variable_manager
 from variable_manager import variable
 from discord import app_commands, Interaction, ui, ButtonStyle, SelectOption
+from ButtonFuntion import Meeting_Check
+import ButtonFuntion
 
 
 token = variable_manager.bot_token
 id = variable_manager.server_id
 
-meetingCount = variable()
+meetingCount = ButtonFuntion.meetingCount
 # variable_meeting = variable()
 
 MyGuild = discord.Object(id=id)
@@ -40,38 +42,6 @@ bot = Chan()
 tree = app_commands.CommandTree(bot)
 
 
-class ButtonFunction(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=30)
-        self.add_item(
-            discord.ui.Button(label="Click Here", url="http://aochfl.tistory.com")
-        )
-
-    @discord.ui.button(label="primary", style=discord.ButtonStyle.primary, row=1)
-    async def button1(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ):
-        await interaction.response.send_message("primary 누르셨습니다")
-
-    @discord.ui.button(label="secondary", style=discord.ButtonStyle.secondary, row=1)
-    async def button2(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ):
-        await interaction.response.send_message("secondary 누르셨습니다")
-
-    @discord.ui.button(label="success", style=discord.ButtonStyle.success, row=2)
-    async def button3(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ):
-        await interaction.response.send_message("success 누르셨습니다")
-
-    @discord.ui.button(label="danger", style=discord.ButtonStyle.danger, row=2)
-    async def button4(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ):
-        await interaction.response.send_message("danger 누르셨습니다")
-
-
 @tree.command(
     guild=MyGuild,
     name="button",
@@ -79,7 +49,7 @@ class ButtonFunction(discord.ui.View):
 )
 async def mkbutton(interaction: Interaction):
     button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False, row=2)
-    view = ButtonFunction()
+    view = Meeting_Check()
 
     async def button_callback(interaction: Interaction):
         await interaction.response.send_message(content="버튼 눌러짐!")
@@ -96,11 +66,11 @@ async def mkbutton(interaction: Interaction):
 async def meeting(interaction: discord.Interaction):
     user = interaction.user
     await interaction.response.send_message(f"{user.mention} 챤하!")
-    meetingCount.increase_meeting()
 
 
 @tree.command(name="오회보", description="오늘 회의 보여줘의 준말", guild=MyGuild)
 async def meeting_log(interaction: discord.Interaction):
+    # meeting_cnt = meetingCount.meeting_count
     if meetingCount.meeting_count == 0:
         await interaction.response.send_message(f"오늘 회의는 없어요!")
     elif meetingCount.meeting_count == 1:
