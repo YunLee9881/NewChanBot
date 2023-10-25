@@ -29,6 +29,9 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 
 # tree = app_commands.CommandTree(bot)
+@bot.event
+async def on_ready():
+    print(f"{bot.user}is ready")
 
 
 @bot.tree.command(
@@ -78,7 +81,17 @@ async def meeting_place(interaction: Interaction):
     view = SelectPlace()
 
     async def select_callback(self, interaction: Interaction):
-        await interaction.response.send_message(f"{interaction.data['values'][0]}")
+        if interaction.data["values"][0] == "1":
+            await interaction.response.send_message("1번 선택!")
+        elif interaction.data["values"][0] == "2":
+            await interaction.response.send_message("2번 선택!")
+        elif interaction.data["values"][0] == "3":
+            await interaction.response.send_message("3번!")
+        elif interaction.data["values"][0] == "4":
+            await interaction.response.send_message("4번!")
+        elif interaction.data["values"][0] == "5":
+            interaction.response.send_message("5번!")
+        # await interaction.response.send_message(f"{interaction.data['values'][0]}")
 
     select.callback = select_callback
     await interaction.response.send_message(view=view)
