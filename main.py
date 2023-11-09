@@ -74,6 +74,11 @@ async def mkbutton(
     await interaction.response.send_message(view=view)
 
 
+@bot.tree.command(name="test", description="as", guild=MyGuild)
+async def test(interaction: discord.Interaction):
+    await interaction.response.send_message("ㅎㅇ")
+
+
 @bot.tree.command(
     name="챤하",
     description="회의 시작하기",
@@ -97,6 +102,31 @@ async def meeting_log(interaction: discord.Interaction):
         await interaction.response.send_message(
             f"오늘은! {meetingCount.meeting_count}개에요 다들 힘내요!"
         )
+
+
+# @bot.tree.command(name="embed", description="엠베드", guild=MyGuild)
+# async def profile(interaction: discord.Interaction, member: discord.Member = None):
+#     if member == None:
+#         member = interaction.author
+
+#     name = member.display_name
+#     pfp = member.display_avatar
+
+#     embed = discord.Embed(
+#         title="난 짬뽕이오", description="머 으쯔라구요 ㅡㅡ", color=discord.Colour.random()
+#     )
+#     embed.set_author(
+#         name=f"{name}",
+#         url="https://blog.msg-team.com/",
+#         icon_url="https://ibb.co/TbRXSbz",
+#     )
+#     embed.set_thumbnail(url=f"{pfp}")
+#     embed.add_field(name="this is 1 field", value="this is just a value")
+#     embed.add_field(name="this is 1 field", value="this is just a value", inline=True)
+#     embed.add_field(name="this is 1 field", value="this is just a value", inline=False)
+#     embed.set_footer(text=f"{name}Made this Embed")
+
+#     await interaction.response.send_message(embed=embed)
 
 
 bot.run(token)
