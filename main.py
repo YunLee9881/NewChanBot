@@ -34,17 +34,41 @@ async def on_ready():
     print(f"{bot.user}is ready")
 
 
+@bot.tree.command(name="select", description="select", guild=MyGuild)
+async def meeting_place(interaction: Interaction):
+    select = ui.Select
+    view = SelectPlace()
+
+    async def select_callback(self, interaction: Interaction):
+        if interaction.data["values"][0] == "1":
+            await interaction.response.send_message("1번 선택!")
+        elif interaction.data["values"][0] == "2":
+            await interaction.response.send_message("2번 선택!")
+        elif interaction.data["values"][0] == "3":
+            await interaction.response.send_message("3번!")
+        elif interaction.data["values"][0] == "4":
+            await interaction.response.send_message("4번!")
+        elif interaction.data["values"][0] == "5":
+            interaction.response.send_message("5번!")
+        # await interaction.response.send_message(f"{interaction.data['values'][0]}")
+
+    select.callback = select_callback
+    await interaction.response.send_message(view=view)
+
+
 @bot.tree.command(
     guild=MyGuild,
     name="button",
     description="button 만들기",
 )
-async def mkbutton(interaction: Interaction):
-    button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False, row=2)
+async def mkbutton(
+    interaction: Interaction,
+):
+    button = ui.Button(style=ButtonStyle.green, label="안녕하세요", disabled=False)
     view = Meeting_Check()
 
     async def button_callback(interaction: Interaction):
-        await interaction.response.send_message(content="버튼 눌러짐!")
+        await bot.tree.get_command("select").callback(interaction)
 
     button.callback = button_callback
     await interaction.response.send_message(view=view)
@@ -73,28 +97,6 @@ async def meeting_log(interaction: discord.Interaction):
         await interaction.response.send_message(
             f"오늘은! {meetingCount.meeting_count}개에요 다들 힘내요!"
         )
-
-
-@bot.tree.command(name="select", description="select", guild=MyGuild)
-async def meeting_place(interaction: Interaction):
-    select = ui.Select
-    view = SelectPlace()
-
-    async def select_callback(self, interaction: Interaction):
-        if interaction.data["values"][0] == "1":
-            await interaction.response.send_message("1번 선택!")
-        elif interaction.data["values"][0] == "2":
-            await interaction.response.send_message("2번 선택!")
-        elif interaction.data["values"][0] == "3":
-            await interaction.response.send_message("3번!")
-        elif interaction.data["values"][0] == "4":
-            await interaction.response.send_message("4번!")
-        elif interaction.data["values"][0] == "5":
-            interaction.response.send_message("5번!")
-        # await interaction.response.send_message(f"{interaction.data['values'][0]}")
-
-    select.callback = select_callback
-    await interaction.response.send_message(view=view)
 
 
 bot.run(token)
