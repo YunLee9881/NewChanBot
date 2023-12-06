@@ -9,4 +9,3 @@ with open("Resource.Json") as config_file:
     config = json.load(config_file)
 
 bot_token = config["bot_token"]
-server_id = config["server_id"]
