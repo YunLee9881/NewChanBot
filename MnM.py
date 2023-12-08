@@ -23,7 +23,7 @@ class MentionTo:
 
         if members_with_role:
             members_list_str = "\n".join(
-                [f"- {member.name}" for member in members_with_role]
+                [f"- {member.mention}" for member in members_with_role]
             )
 
         role_and_role = [
@@ -32,7 +32,7 @@ class MentionTo:
 
         if role_and_role:
             final_members_list = "\n".join(
-                [f"- {member.name}" for member in role_and_role]
+                [f"- {member.mention}" for member in role_and_role]
             )
             return f"멤버:\n{final_members_list}"
         else:
