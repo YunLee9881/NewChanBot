@@ -19,7 +19,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 mention_to = MnM.MentionTo(bot)
 
 
-@bot.slash_command(name="ㅊㅎ", description="이것은 테스트 슬래시 명령어입니다.")
+@bot.slash_command(name="button", description="잡다잡다한 버튼")
 async def button(ctx):
     await ctx.response.defer()
     await ctx.followup.send(
@@ -28,9 +28,9 @@ async def button(ctx):
 
 
 @bot.slash_command(name="mention", description="모두가 기다리던 && 멘션!")
-async def mnm(ctx, role_name: str):
+async def mnm(ctx, role_name1: str, role_name2: str):
     await ctx.defer()
-    result = await mention_to.find_members_with_role(ctx, role_name)
+    result = await mention_to.find_members_with_role(ctx, role_name1, role_name2)
     await ctx.followup.send(content=result)
 
 
@@ -39,16 +39,27 @@ async def on_ready():
     print(f"{bot.user}is ready")
 
 
+@bot.command(name="챤하")
+async def meeting(ctx):
+    await ctx.send("무엇을 하시겠어요?", view=ButtonFuntion.Meet_Button())
+    mode = ButtonFuntion.Meet_Button()
+
+
+@bot.command()
+async def members(ctx):
+    members = ctx.guild.members  # 서버의 모든 멤버를 가져옵니다.
+
+
 @bot.command()
 async def time(ctx):
-    await ctx.send("시간을 입력하세요 단 형식은 00:00으로 입력해주셔야해요!.")
+    await ctx.send("시간을 입력하세요 단 형식은 00:00으로 입력해주셔야해요!")
 
     def check(m):
-        email_regex = r"\b[0-9]+:[0-9]{2,}\b"
+        time_regex = r"\b[0-9]+:[0-9]{2,}\b"
         return (
             m.author == ctx.author
             and m.channel == ctx.channel
-            and re.fullmatch(email_regex, m.content)
+            and re.fullmatch(time_regex, m.content)
         )
 
     try:
