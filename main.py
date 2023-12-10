@@ -11,7 +11,7 @@ import json
 
 
 token = variable_manager.bot_token
-count = variable_manager.i
+
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 mention_to = MnM.MentionTo(bot)
@@ -51,7 +51,6 @@ async def members(ctx):
 @bot.command()
 async def time(ctx):
     await ctx.send("시간을 입력하세요 단 형식은 00:00으로 입력해주셔야해요!")
-    global count
 
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
@@ -60,13 +59,12 @@ async def time(ctx):
         user_input = await bot.wait_for("message", timeout=15.0, check=check)
         with open("data.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-        new_data = {f"time{count}": f"{user_input.content}"}
+        new_data = {f"time{variable_manager.count}": f"{user_input.content}"}
         merged_data = {**data, **new_data}
         with open("data.json", "w", encoding="utf-8") as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=4)
         await ctx.send(f"입력하신 시간은 {user_input.content}입니다.")
         await selectPlace(ctx)
-        count += 1
     except asyncio.TimeoutError:
         await ctx.send("15초 동안 입력이 없어 기능이 비활성화되었습니다.")
 
@@ -75,12 +73,6 @@ async def time(ctx):
 async def selectPlace(ctx: commands.Context):
     view = SelectFunction.SelectView()
     await ctx.send("회의를 진행할 장소를 선택해주세요:", view=view)
-    # with open("data.json", "r", encoding="utf-8") as f:
-    #     data = json.load(f)
-    #     new_data = {f"place{count}": f"{place}"}
-    #     merged_data = {**data, **new_data}
-    # with open("data.json", "w", encoding="utf-8") as f:
-    #     json.dump(merged_data, f, ensure_ascii=False, indent=4)
 
 
 @bot.command()
@@ -90,14 +82,14 @@ async def selectName(ctx, oppName: str):
 
     with open("data.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    new_data = {f"name{count}": f"{oppName}"}
+    new_data = {f"name{variable_manager.count}": f"{oppName}"}
     merged_data = {**data, **new_data}
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(merged_data, f, ensure_ascii=False, indent=4)
 
 
 @bot.command()
-async def OnO(ctx, oppName: str):
+async def ono(ctx, oppName: str):
     await selectName(ctx, oppName)
     await time(ctx)
 
