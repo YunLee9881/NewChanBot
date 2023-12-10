@@ -1,19 +1,17 @@
-import requests
 import discord
-import os
-import json
 from discord.ext import commands
 import re
 import variable_manager
 import asyncio
-import SelectFuntion
-import ButtonFuntion
+import SelectFunction
+import ButtonFunction
 from discord.utils import get
 import MnM
+import json
 
 
 token = variable_manager.bot_token
-
+count = variable_manager.i
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 mention_to = MnM.MentionTo(bot)
@@ -23,7 +21,7 @@ mention_to = MnM.MentionTo(bot)
 async def button(ctx):
     await ctx.response.defer()
     await ctx.followup.send(
-        content=f"안녕하세요, {ctx.author.name}님!", view=ButtonFuntion.Button()
+        content=f"안녕하세요, {ctx.author.name}님!", view=ButtonFunction.Button()
     )
 
 
@@ -41,39 +39,67 @@ async def on_ready():
 
 @bot.command(name="챤하")
 async def meeting(ctx):
-    await ctx.send("무엇을 하시겠어요?", view=ButtonFuntion.Meet_Button())
-    mode = ButtonFuntion.Meet_Button()
+    await ctx.send("무엇을 하시겠어요?", view=ButtonFunction.Meet_Button())
+    mode = ButtonFunction.Meet_Button()
 
 
 @bot.command()
 async def members(ctx):
-    members = ctx.guild.members  # 서버의 모든 멤버를 가져옵니다.
+    members = ctx.guild.members
 
 
 @bot.command()
 async def time(ctx):
     await ctx.send("시간을 입력하세요 단 형식은 00:00으로 입력해주셔야해요!")
+    global count
 
     def check(m):
-        time_regex = r"\b[0-9]+:[0-9]{2,}\b"
-        return (
-            m.author == ctx.author
-            and m.channel == ctx.channel
-            and re.fullmatch(time_regex, m.content)
-        )
+        return m.author == ctx.author and m.channel == ctx.channel
 
     try:
-        msg = await bot.wait_for("message", check=check, timeout=15)
-        await ctx.send(f"입력된 시간: {msg.content}")
-        await select(ctx)
+        user_input = await bot.wait_for("message", timeout=15.0, check=check)
+        with open("data.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        new_data = {f"time{count}": f"{user_input.content}"}
+        merged_data = {**data, **new_data}
+        with open("data.json", "w", encoding="utf-8") as f:
+            json.dump(merged_data, f, ensure_ascii=False, indent=4)
+        await ctx.send(f"입력하신 시간은 {user_input.content}입니다.")
+        await selectPlace(ctx)
+        count += 1
     except asyncio.TimeoutError:
         await ctx.send("15초 동안 입력이 없어 기능이 비활성화되었습니다.")
 
 
-@bot.command(name="ㅅㅌ")
-async def select(ctx: commands.Context):
-    view = SelectFuntion.SelectView()
+@bot.command()
+async def selectPlace(ctx: commands.Context):
+    view = SelectFunction.SelectView()
     await ctx.send("회의를 진행할 장소를 선택해주세요:", view=view)
+    # with open("data.json", "r", encoding="utf-8") as f:
+    #     data = json.load(f)
+    #     new_data = {f"place{count}": f"{place}"}
+    #     merged_data = {**data, **new_data}
+    # with open("data.json", "w", encoding="utf-8") as f:
+    #     json.dump(merged_data, f, ensure_ascii=False, indent=4)
+
+
+@bot.command()
+async def selectName(ctx, oppName: str):
+    opponent = ctx.guild.get_member_named(oppName)
+    # await ctx.send(f"{ctx.author.mention}, {opponent.mention}")
+
+    with open("data.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    new_data = {f"name{count}": f"{oppName}"}
+    merged_data = {**data, **new_data}
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(merged_data, f, ensure_ascii=False, indent=4)
+
+
+@bot.command()
+async def OnO(ctx, oppName: str):
+    await selectName(ctx, oppName)
+    await time(ctx)
 
 
 bot.run(token)

@@ -1,9 +1,4 @@
-import requests
-import discord
-import os
-import json
 from discord.ext import commands
-import re
 from discord.utils import get
 
 
