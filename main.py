@@ -8,6 +8,8 @@ import ButtonFunction
 from discord.utils import get
 import MnM
 import json
+import time
+from datetime import datetime, timedelta
 
 
 token = variable_manager.bot_token
@@ -78,7 +80,6 @@ async def selectPlace(ctx: commands.Context):
 @bot.command()
 async def selectName(ctx, oppName: str):
     opponent = ctx.guild.get_member_named(oppName)
-    # await ctx.send(f"{ctx.author.mention}, {opponent.mention}")
 
     with open("data.json", "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -92,6 +93,35 @@ async def selectName(ctx, oppName: str):
 async def ono(ctx, oppName: str):
     await selectName(ctx, oppName)
     await time(ctx)
+
+
+def read_times_from_json():
+    with open("data.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    times = []
+    for key, value in data.items():
+        if key.startswith("time"):
+            times.append(datetime.strptime(value, "%H:%M"))
+    return times
+
+
+async def notify_before_five_minutes(target_time):
+    target_time = target_time - timedelta(minutes=5)
+    while True:
+        now = datetime.now().replace(second=0, microsecond=0)
+        if now >= target_time:
+            print(f"It's 5 minutes before {target_time + timedelta(minutes=5)}!")
+            break
+        await asyncio.sleep(30)
+
+
+async def main():
+    times = read_times_from_json()
+    tasks = [notify_before_five_minutes(time) for time in times]
+    await asyncio.gather(*tasks)
+
+
+asyncio.run(main())
 
 
 bot.run(token)
