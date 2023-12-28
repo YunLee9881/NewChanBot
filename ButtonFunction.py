@@ -14,7 +14,7 @@ class Button(discord.ui.View):
     async def button1_callback(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
-        await interaction.response.send_message("glg")
+        await interaction.response.send_message("아직 개발중이에요 조금만 기다려주세요!")
         button.disabled = True  # 버튼 비활성화
 
     @discord.ui.button(label="잡담", style=discord.ButtonStyle.success)

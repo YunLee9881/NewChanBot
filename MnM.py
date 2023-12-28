@@ -29,6 +29,6 @@ class MentionTo:
             final_members_list = "\n".join(
                 [f"- {member.mention}" for member in role_and_role]
             )
-            return f"멤버:\n{final_members_list}"
+            return f"\n{final_members_list}"
         else:
             return f"멤버가 없습니다."
