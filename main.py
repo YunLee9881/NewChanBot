@@ -66,6 +66,8 @@ async def time(ctx):
         with open("data.json", "w", encoding="utf-8") as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=4)
         await ctx.send(f"입력하신 시간은 {user_input.content}입니다.")
+        target_time = datetime.strptime(user_input.content, "%H:%M")
+        asyncio.create_task(notify_before_five_minutes(target_time, ctx.channel))
         await selectPlace(ctx)
     except asyncio.TimeoutError:
         await ctx.send("15초 동안 입력이 없어 기능이 비활성화되었습니다.")
@@ -80,10 +82,12 @@ async def selectPlace(ctx: commands.Context):
 @bot.command()
 async def selectName(ctx, oppName: str):
     opponent = ctx.guild.get_member_named(oppName)
+    me = ctx.author.name
 
     with open("data.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    new_data = {f"name{variable_manager.count}": f"{oppName}"}
+    new_data = {f"Oname{variable_manager.count}": f"{oppName}"}
+    new_data = {f"Mname{variable_manager.count}": f"{me}"}
     merged_data = {**data, **new_data}
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(merged_data, f, ensure_ascii=False, indent=4)
@@ -105,23 +109,22 @@ def read_times_from_json():
     return times
 
 
-async def notify_before_five_minutes(target_time):
+# async def set_reminder(ctx, *, time: str):
+#     target_time = datetime.strptime(time, "%H:%M")
+#     asyncio.create_task(notify_before_five_minutes(target_time, ctx.channel))
+
+
+async def notify_before_five_minutes(target_time, channel):
+    target_time = datetime.now().replace(
+        hour=target_time.hour, minute=target_time.minute, second=0, microsecond=0
+    )
     target_time = target_time - timedelta(minutes=5)
     while True:
         now = datetime.now().replace(second=0, microsecond=0)
         if now >= target_time:
-            print(f"It's 5 minutes before {target_time + timedelta(minutes=5)}!")
+            await channel.send(f"{target_time + timedelta(minutes=5)}까지 5분 남았습니다!")
             break
         await asyncio.sleep(30)
-
-
-async def main():
-    times = read_times_from_json()
-    tasks = [notify_before_five_minutes(time) for time in times]
-    await asyncio.gather(*tasks)
-
-
-asyncio.run(main())
 
 
 bot.run(token)
