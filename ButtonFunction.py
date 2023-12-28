@@ -35,6 +35,13 @@ class Button(discord.ui.View):
         await interaction.response.send_message(f"이쪽으로! <@{lsm_id}>")
         button.disabled = True  # 버튼 비활성화
 
+    @discord.ui.button(label="Call", style=discord.ButtonStyle.danger)
+    async def button3_callback(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        await interaction.response.send_message(f"이쪽으로! <@{lsm_id}>")
+        button.disabled = True  # 버튼 비활성화
+
 
 class Meet_Button(discord.ui.View):
     @discord.ui.button(label="커피챗", style=discord.ButtonStyle.primary)

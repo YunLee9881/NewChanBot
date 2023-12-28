@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import Embed
 import re
 import variable_manager
 import asyncio
@@ -22,16 +23,34 @@ mention_to = MnM.MentionTo(bot)
 @bot.slash_command(name="button", description="잡다잡다한 버튼")
 async def button(ctx):
     await ctx.response.defer()
-    await ctx.followup.send(
-        content=f"안녕하세요, {ctx.author.name}님!", view=ButtonFunction.Button()
-    )
+    await ctx.followup.send(content=f"안녕하세요, {ctx.author.name}님!")
+    await ctx.send(view=ButtonFunction.Button())
 
 
 @bot.slash_command(name="mention", description="모두가 기다리던 && 멘션!")
 async def mnm(ctx, role_name1: str, role_name2: str):
-    await ctx.defer()
+    await ctx.response.defer()
     result = await mention_to.find_members_with_role(ctx, role_name1, role_name2)
-    await ctx.followup.send(content=result)
+
+    await ctx.followup.send(content="와주세요!")
+    await ctx.send(content=result)
+
+
+@bot.slash_command(name="help", description="챤봇 사용법!")
+async def help(ctx):
+    await ctx.defer()
+    embed = Embed(title="챤봇 사용설명서", description="", color=0x00FF00)
+    embed.add_field(
+        name="멘션&&멘션!", value="role_name에 @를 빼고 역할 이름을 넣어주세요!", inline=False
+    )
+    embed.set_footer(text="")
+    embed.add_field(name="회의!", value="!챤하를 통해 사용하실 수 있어요!", inline=False)
+    embed.set_footer(text="이 기능은 개발중이에요 ㅠㅠ")
+    embed.add_field(
+        name="잡다 버튼", value="개발자 부르기, 회의 목록 확인 및 대화를 할 수 있어요!", inline=False
+    )
+    embed.set_footer(text="")
+    await ctx.followup.send(embed=embed)
 
 
 @bot.event
@@ -39,10 +58,10 @@ async def on_ready():
     print(f"{bot.user}is ready")
 
 
-@bot.command(name="챤하")
-async def meeting(ctx):
-    await ctx.send("무엇을 하시겠어요?", view=ButtonFunction.Meet_Button())
-    mode = ButtonFunction.Meet_Button()
+# @bot.command(name="챤하")
+# async def meeting(ctx):
+#     await ctx.send("무엇을 하시겠어요?", view=ButtonFunction.Meet_Button())
+#     mode = ButtonFunction.Meet_Button()
 
 
 @bot.command()
