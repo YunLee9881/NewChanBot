@@ -11,13 +11,18 @@ import MnM
 import json
 import time
 from datetime import datetime, timedelta
-
+from discord.ext import tasks
 
 token = variable_manager.bot_token
 
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 mention_to = MnM.MentionTo(bot)
+
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user}is ready")
 
 
 @bot.slash_command(name="button", description="잡다잡다한 버튼")
@@ -51,11 +56,6 @@ async def help(ctx):
     )
     embed.set_footer(text="")
     await ctx.followup.send(embed=embed)
-
-
-@bot.event
-async def on_ready():
-    print(f"{bot.user}is ready")
 
 
 # @bot.command(name="챤하")
@@ -145,5 +145,15 @@ async def notify_before_five_minutes(target_time, channel):
             break
         await asyncio.sleep(30)
 
+
+@tasks.loop(hours=24)
+async def reset_json():
+    if datetime.datetime.now().hour == 18:  # UTC 시간으로 오후 6시에 해당하는 시간
+        data = {}
+        with open("data.json", "w") as f:
+            json.dump(data, f)
+
+
+reset_json.start()
 
 bot.run(token)
